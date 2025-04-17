@@ -183,4 +183,20 @@ CREATE TABLE IF NOT EXISTS contacts (
 
 -- Create index for contacts
 CREATE INDEX idx_contact_status ON contacts(status);
-CREATE INDEX idx_contact_email ON contacts(email); 
+CREATE INDEX idx_contact_email ON contacts(email);
+
+-- Create notifications table
+CREATE TABLE IF NOT EXISTS notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    type ENUM('success', 'error', 'info', 'warning') NOT NULL DEFAULT 'info',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    is_read BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Create index for notifications
+CREATE INDEX idx_notification_user ON notifications(user_id);
+CREATE INDEX idx_notification_read ON notifications(is_read); 

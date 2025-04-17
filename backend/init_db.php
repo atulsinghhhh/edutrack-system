@@ -21,6 +21,24 @@ try {
 
     $db->exec($query);
 
+    // Create notifications table
+    $query = "CREATE TABLE IF NOT EXISTS notifications (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        user_id INT NOT NULL,
+        title VARCHAR(255) NOT NULL,
+        message TEXT NOT NULL,
+        type ENUM('success', 'error', 'info', 'warning') NOT NULL DEFAULT 'info',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        is_read BOOLEAN DEFAULT FALSE,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    )";
+
+    $db->exec($query);
+
+    // Create indexes for notifications
+    $db->exec("CREATE INDEX IF NOT EXISTS idx_notification_user ON notifications(user_id)");
+    $db->exec("CREATE INDEX IF NOT EXISTS idx_notification_read ON notifications(is_read)");
+
     // Create listeners table
     $query = "CREATE TABLE IF NOT EXISTS listeners (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -65,6 +83,11 @@ try {
     $stmt = $db->query("SELECT COUNT(*) as count FROM listeners");
     $count = $stmt->fetch(PDO::FETCH_ASSOC)['count'];
     echo " Total listeners in database: " . $count;
-} catch (Exception $e) {
-    echo "Error initializing database: " . $e->getMessage();
+
+    echo json_encode(["message" => "Database tables created successfully"]);
+} catch (PDOException $e) {
+    echo json_encode([
+        "error" => "Database error",
+        "message" => $e->getMessage()
+    ]);
 }

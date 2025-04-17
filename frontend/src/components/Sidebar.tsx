@@ -5,7 +5,6 @@ import {
   PieChart, 
   Target, 
   Upload, 
-  Users,
   Mail,
   LogOut
 } from 'lucide-react';
@@ -21,7 +20,6 @@ const Sidebar = () => {
     { path: '/factors', icon: PieChart, label: 'Dropout Factors' },
     { path: '/interventions', icon: Target, label: 'Interventions' },
     { path: '/data-upload', icon: Upload, label: 'Data Upload' },
-    { path: '/users', icon: Users, label: 'User Management' },
     { path: '/contact', icon: Mail, label: 'Contact' },
   ];
 

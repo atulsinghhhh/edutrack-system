@@ -10,7 +10,6 @@ import Dashboard from './pages/Dashboard';
 import DropoutFactors from './pages/DropoutFactors';
 import Interventions from './pages/Interventions';
 import DataUpload from './pages/DataUpload';
-import UserManagement from './pages/UserManagement';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
@@ -80,14 +79,6 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <DataUpload />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/users"
-                element={
-                  <ProtectedRoute>
-                    <UserManagement />
                   </ProtectedRoute>
                 }
               />
