@@ -27,10 +27,10 @@ switch ($method) {
                     i.end_date,
                     i.status as intervention_status,
                     i.effectiveness
-                 FROM students s
-                 LEFT JOIN interventions i ON s.id = i.student_id
-                 WHERE s.dropout_risk >= 70
-                 ORDER BY s.dropout_risk DESC";
+                FROM students s
+                LEFT JOIN interventions i ON s.id = i.student_id
+                WHERE s.dropout_risk >= 70
+                ORDER BY s.dropout_risk DESC";
 
         $stmt = $db->prepare($query);
         $stmt->execute();
@@ -53,7 +53,7 @@ switch ($method) {
             !empty($data->description)
         ) {
             $query = "INSERT INTO interventions 
-                     SET 
+                    SET 
                         student_id = :student_id,
                         type = :type,
                         description = :description,
@@ -68,8 +68,8 @@ switch ($method) {
 
             if ($stmt->execute()) {
                 $update_query = "UPDATE students 
-                               SET intervention_status = 'In Progress' 
-                               WHERE id = :student_id";
+                            SET intervention_status = 'In Progress' 
+                            WHERE id = :student_id";
 
                 $update_stmt = $db->prepare($update_query);
                 $update_stmt->bindParam(":student_id", $data->student_id);
@@ -96,14 +96,14 @@ switch ($method) {
             !empty($data->effectiveness)
         ) {
             $query = "UPDATE interventions 
-                     SET 
+                    SET 
                         status = :status,
                         effectiveness = :effectiveness,
                         end_date = CASE 
                             WHEN :status = 'Completed' THEN CURRENT_DATE 
                             ELSE NULL 
                         END
-                     WHERE id = :intervention_id";
+                    WHERE id = :intervention_id";
 
             $stmt = $db->prepare($query);
 
@@ -114,12 +114,12 @@ switch ($method) {
             if ($stmt->execute()) {
                 if ($data->status == 'Completed') {
                     $check_query = "SELECT COUNT(*) as count 
-                                  FROM interventions 
-                                  WHERE student_id = (
-                                      SELECT student_id 
-                                      FROM interventions 
-                                      WHERE id = :intervention_id
-                                  ) AND status != 'Completed'";
+                                FROM interventions 
+                                WHERE student_id = (
+                                    SELECT student_id 
+                                    FROM interventions 
+                                    WHERE id = :intervention_id
+                                ) AND status != 'Completed'";
 
                     $check_stmt = $db->prepare($check_query);
                     $check_stmt->bindParam(":intervention_id", $data->intervention_id);
@@ -128,12 +128,12 @@ switch ($method) {
 
                     if ($result['count'] == 0) {
                         $update_query = "UPDATE students 
-                                       SET intervention_status = 'Completed' 
-                                       WHERE id = (
-                                           SELECT student_id 
-                                           FROM interventions 
-                                           WHERE id = :intervention_id
-                                       )";
+                                    SET intervention_status = 'Completed' 
+                                    WHERE id = (
+                                        SELECT student_id 
+                                        FROM interventions 
+                                        WHERE id = :intervention_id
+                                    )";
 
                         $update_stmt = $db->prepare($update_query);
                         $update_stmt->bindParam(":intervention_id", $data->intervention_id);
